@@ -14,7 +14,7 @@ public class TracerMain {
 	public static final float ATT_MIN = 0.0001f;
 	public static final float FOV = (float) Math.toRadians(60);
 	
-	int width = 512, height = 512;
+	int width = 1000, height = 1000;
 	BufferedImage img;
 	JFrame frame;
 	
@@ -36,10 +36,10 @@ public class TracerMain {
 		
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		
-		objects.add(new Sphere(new Vector3f(0, 0, -2f), 1.0f,
+		objects.add(new Sphere(new Vector3f(1, 0, -4f), 1.0f,
 				new Material(Color3f.red, 0.3f)));
 		
-		objects.add(new Sphere(new Vector3f(0.0f, 0.0f, -6f), 4.0f,
+		objects.add(new Sphere(new Vector3f(-1.0f, 0.0f, -4f), 1.0f,
 				new Material(Color3f.blue, 0.3f)));
 		
 		Plane ground = new Plane(new Vector3f(0.0f, 1.0f, 0.0f),
@@ -47,7 +47,7 @@ public class TracerMain {
 				new Material(new Color3f(0.0f, 0.3f, 0.0f), 0.3f));
 		objects.add(ground);
 		
-		PointLight light = new PointLight(new Vector3f(0, 50f, -1.0f), Color3f.white);
+		PointLight light = new PointLight(new Vector3f(0, 0f, 0.0f), Color3f.white);
 		lights.add(light);
 		
 		//lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
@@ -123,24 +123,28 @@ public class TracerMain {
 			}
 		}
 		if(obj == null) return Color3f.black;
-		
+		// do light calculation
 		Vector3f pos = new Vector3f(ray.origin).add(new Vector3f(ray.direction).mul(mint));
+		Vector3f normal = obj.normalAt(pos);
 		Color3f lColor = new Color3f();
 		for (Light l : lights) {
 			
-			lColor.addThis(traceLight(pos, obj.normalAt(pos), obj.m, l));
+			lColor.addThis(traceLight(pos, normal, obj.m, l));
 		}
-		//lColor = traceLight(pos, obj.normalAt(pos), obj.m);
-		return lColor.mul(obj.m.color);
+		
+		// do reflection
+		Vector3f reflect = new Vector3f(ray.direction).reflect(normal);
+		Color3f refColor = trace(new Ray(pos, reflect), att * 0.75f);
+		return lColor.mul(obj.m.color.mul(att).add(refColor));
 	}
 	
 	public Color3f traceLight(Vector3f pos, Vector3f normal, Material m, Light light) {
-		// TODO: do collision detection on light ray
 		Ray toLight = new Ray(pos, new Vector3f(light.pos).sub(pos).normalize());
 		for (Shape obj : objects) {
 			float t = obj.collides(toLight);
 			if (t > 0) return Color3f.black;
 		}
+		//TODO: make the light do more work so that DirectionalLight and AmbientLight work
 		return light.calcColor(pos, normal, m);
 	}
 	
