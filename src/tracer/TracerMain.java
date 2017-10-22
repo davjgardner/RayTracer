@@ -21,7 +21,7 @@ public class TracerMain {
 	List<Shape> objects = new ArrayList<>();
 	List<Light> lights = new ArrayList<>();
 	
-	PointLight light = new PointLight(new Vector3f(0, 5f, -1.0f), Color3f.white);
+	
 	DirectionalLight dlight = new DirectionalLight(new Vector3f(0.0f, 0.0f, 1.0f), Color3f.white);
 	
 	public TracerMain() {
@@ -36,12 +36,22 @@ public class TracerMain {
 		
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		
-		Sphere sphere = new Sphere(new Vector3f(0, 0, -2f), 1.0f);
-		
-		sphere.m = new Material(Color3f.red, 0.3f);
-		
+		Sphere sphere = new Sphere(new Vector3f(0, 0, -2f), 1.0f,
+				new Material(Color3f.red, 0.3f));
 		objects.add(sphere);
+		
+		objects.add(new Sphere(new Vector3f(0.0f, 0.0f, -6f), 4.0f,
+				new Material(Color3f.blue, 0.3f)));
+		
+		Plane ground = new Plane(new Vector3f(0.0f, 1.0f, 0.0f),
+				new Vector3f(0.0f, -2.0f, 0.0f),
+				new Material(new Color3f(0.0f, 0.3f, 0.0f), 0.3f));
+		objects.add(ground);
+		
+		PointLight light = new PointLight(new Vector3f(0, 5f, -1.0f), Color3f.white);
 		lights.add(light);
+		
+		lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
 		
 		render();
 		
