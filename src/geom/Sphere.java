@@ -17,6 +17,11 @@ public class Sphere extends Shape {
 		this.radius = radius;
 	}
 	
+	public Sphere(Vector3f pos, float radius, Material material) {
+		this(pos, radius);
+		this.m = material;
+	}
+	
 	/**
 	 * Calculates the collision with the given ray
 	 * @param ray
