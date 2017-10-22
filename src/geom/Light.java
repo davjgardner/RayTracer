@@ -4,5 +4,5 @@ import org.joml.Vector3f;
 
 public abstract class Light {
 	
-	public abstract Color3f getColor(Vector3f pos);
+	public abstract Color3f calcColor(Vector3f pos, Vector3f normal);
 }
