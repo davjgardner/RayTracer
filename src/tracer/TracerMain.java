@@ -18,7 +18,9 @@ public class TracerMain {
 	BufferedImage img;
 	JFrame frame;
 	
-	Sphere sphere = new Sphere(new Vector3f(0, 0, -2f), 1.0f);
+	List<Shape> objects = new ArrayList<>();
+	List<Light> lights = new ArrayList<>();
+	
 	PointLight light = new PointLight(new Vector3f(0, 5f, -1.0f), Color3f.white);
 	DirectionalLight dlight = new DirectionalLight(new Vector3f(0.0f, 0.0f, 1.0f), Color3f.white);
 	
@@ -34,7 +36,12 @@ public class TracerMain {
 		
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		
+		Sphere sphere = new Sphere(new Vector3f(0, 0, -2f), 1.0f);
+		
 		sphere.m = new Material(Color3f.red, 0.3f);
+		
+		objects.add(sphere);
+		lights.add(light);
 		
 		render();
 		
@@ -72,7 +79,7 @@ public class TracerMain {
 	public void render() {
 		for (int x=0; x<width; x++) {
 			for (int y=0; y<height; y++) {
-				Color3f c = trace(cast(x, y), null, null, 1.0f);
+				Color3f c = trace(cast(x, y), 1.0f);
 				img.setRGB(x, y, c.getRGB());
 			}
 		}
@@ -81,30 +88,40 @@ public class TracerMain {
 	/**
 	 * Traces the given ray through the scene until att is less than ATT_MIN
 	 * @param ray the ray to trace
-	 * @param s list of shapes in the scene
 	 * @param att current attenuation value
 	 * @return the Color3f this ray supplies
 	 */
-	public Color3f trace(Ray ray, List<Shape> s, List<Light> l, float att) {
+	public Color3f trace(Ray ray, float att) {
 		/*
 		 * for Object o in objects
 		 *  collide ray with o
 		 *  if no collision then continue
 		 *  else
-		 *   Color3f += cast rays to light sources
-		 *   Color3f += trace reflection ray
+		 *   color += cast rays to light sources
+		 *   color += trace reflection ray
 		 *   return Color3f * att
 		 */
-		float t = sphere.collides(ray);
-		if (t > 0) {
-			Vector3f pos = new Vector3f(ray.origin).add(new Vector3f(ray.direction).mul(t));
-			Color3f lColor = traceLight(pos, sphere.normalAt(pos), sphere.m, l);
-			return lColor.mul(sphere.m.color);
+		float mint = -1;
+		Shape obj = null;
+		// find closest object
+		for (Shape s : objects) {
+			float t = s.collides(ray);
+			if (t > 0) {
+				if (t < mint || obj == null) {
+					mint = t;
+					obj = s;
+				}
+			}
 		}
-		else return Color3f.black;
+		if(obj == null) return Color3f.black;
+		
+		Vector3f pos = new Vector3f(ray.origin).add(new Vector3f(ray.direction).mul(mint));
+		Color3f lColor = traceLight(pos, obj.normalAt(pos), obj.m);
+		return lColor.mul(obj.m.color);
 	}
 	
-	public Color3f traceLight(Vector3f pos, Vector3f normal, Material m, List<Light> l) {
+	public Color3f traceLight(Vector3f pos, Vector3f normal, Material m) {
+		
 		Vector3f toLight = new Vector3f(light.pos).sub(pos).normalize();
 //		System.out.println("toLight = " + toLight);
 		float diffuseFactor = Math.max(normal.dot(toLight), 0.0f);

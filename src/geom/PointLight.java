@@ -13,7 +13,7 @@ public class PointLight extends Light {
 	
 	
 	@Override
-	public Color3f getColor(Vector3f pos) {
+	public Color3f calcColor(Vector3f pos, Vector3f normal, Material m) {
 		return color;
 	}
 }
