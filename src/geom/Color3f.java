@@ -113,9 +113,9 @@ public class Color3f {
 	 * @return the clamped color as a new Color3f object
 	 */
 	public Color3f clamp() {
-		return new Color3f(Math.min(Math.abs(r), 1.0f),
-				Math.min(Math.abs(g), 1.0f),
-				Math.min(Math.abs(b), 1.0f));
+		return new Color3f(Math.min(Math.max(r, 0.0f), 1.0f),
+				Math.min(Math.max(g, 0.0f), 1.0f),
+				Math.min(Math.max(b, 0.0f), 1.0f));
 	}
 	
 	/**
@@ -124,9 +124,9 @@ public class Color3f {
 	 * @return this
 	 */
 	public Color3f clampThis() {
-		r = Math.min(Math.abs(r), 1.0f);
-		g = Math.min(Math.abs(g), 1.0f);
-		b = Math.min(Math.abs(b), 1.0f);
+		r = Math.min(Math.max(r, 0.0f), 1.0f);
+		g = Math.min(Math.max(g, 0.0f), 1.0f);
+		b = Math.min(Math.max(b, 0.0f), 1.0f);
 		return this;
 	}
 	
