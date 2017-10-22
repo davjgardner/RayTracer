@@ -14,6 +14,9 @@ public class PointLight extends Light {
 	
 	@Override
 	public Color3f calcColor(Vector3f pos, Vector3f normal, Material m) {
-		return color;
+		Vector3f toLight = new Vector3f(this.pos).sub(pos).normalize();
+		float diffuseFactor = Math.max(normal.dot(toLight), 0.0f);
+		Color3f diffuseColor = this.color.mul(diffuseFactor);
+		return diffuseColor;
 	}
 }

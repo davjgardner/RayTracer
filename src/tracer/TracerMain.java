@@ -116,19 +116,18 @@ public class TracerMain {
 		if(obj == null) return Color3f.black;
 		
 		Vector3f pos = new Vector3f(ray.origin).add(new Vector3f(ray.direction).mul(mint));
-		Color3f lColor = traceLight(pos, obj.normalAt(pos), obj.m);
+		Color3f lColor = new Color3f();
+		for (Light l : lights) {
+			
+			lColor.addThis(traceLight(pos, obj.normalAt(pos), obj.m, l));
+		}
+		//lColor = traceLight(pos, obj.normalAt(pos), obj.m);
 		return lColor.mul(obj.m.color);
 	}
 	
-	public Color3f traceLight(Vector3f pos, Vector3f normal, Material m) {
-		
-		Vector3f toLight = new Vector3f(light.pos).sub(pos).normalize();
-//		System.out.println("toLight = " + toLight);
-		float diffuseFactor = Math.max(normal.dot(toLight), 0.0f);
-//		float diffuseFactor = Math.max(normal.dot(dlight.dir), 0.0f);
-		System.out.println("diffuseFactor = " + diffuseFactor);
-		Color3f diffuseColor = light.color.mul(diffuseFactor);
-		return diffuseColor;
+	public Color3f traceLight(Vector3f pos, Vector3f normal, Material m, Light light) {
+		// TODO: do collision detection on light ray
+		return light.calcColor(pos, normal, m);
 	}
 	
 	public static void main(String[] args) {
