@@ -1,5 +1,8 @@
 package geom;
 
+/**
+ * Encapsulates a three-component color in r, g, b.
+ */
 public class Color3f {
 	public float r, g, b;
 	

@@ -9,20 +9,36 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Implements a basic ray-tracer.
+ */
 public class TracerMain {
 	
-	public static final float ATT_MIN = 0.0001f;
-	public static final float FOV = (float) Math.toRadians(60);
+	/**
+	 * Minimum attenuation before no further tracing is done
+	 */
+	static final float ATT_MIN = 0.0001f;
+	/**
+	 * Field of view (not currently used)
+	 */
+	static final float FOV = (float) Math.toRadians(60);
 	
-	int width = 1000, height = 1000;
+	/**
+	 * Screen width (pixels)
+	 */
+	int width = 1000;
+	/**
+	 * Screen height (pixels)
+	 */
+	int height = 1000;
+	
+	
 	BufferedImage img;
 	JFrame frame;
 	
 	List<Shape> objects = new ArrayList<>();
 	List<Light> lights = new ArrayList<>();
 	
-	
-	DirectionalLight dlight = new DirectionalLight(new Vector3f(0.0f, 0.0f, 1.0f), Color3f.white);
 	
 	public TracerMain() {
 		frame = new JFrame("Ray Tracer") {
@@ -36,6 +52,7 @@ public class TracerMain {
 		
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		
+		// Initialize objects
 		objects.add(new Sphere(new Vector3f(1, 0, -6f), 1.0f,
 				new Material(Color3f.red, 1.0f)));
 		
@@ -65,19 +82,12 @@ public class TracerMain {
 	 * @return the Ray passing through (x, y)
 	 */
 	public Ray cast(float sx, float sy) {
-		float aspectRatio = (float) width / (float) height;
 		sy = height - sy - 1;
 		sx -= 0.5f;
 		sy -= 0.5f;
 		float x = sx/width * 2f - 1f;
 		float y = sy/height * 2f - 1f;
-		float fly = 1f / (2f * (float) Math.tan(FOV / 2f));
-		float flx = 1f / (2f * (float) Math.tan(FOV * aspectRatio / 2f));
-		float thetax = (float) Math.atan2(x, flx);
-		float thetay = (float) Math.atan2(y, fly);
-		Vector3f dir = new Vector3f((float) Math.cos(thetax), (float) Math.cos(thetay), -1).normalize();
-		dir = new Vector3f(x, y, -1).normalize();
-//		System.out.println("(" + x + ", " + y + "): dir = " + dir);
+		Vector3f dir = new Vector3f(x, y, -1).normalize();
 		return new Ray(new Vector3f(), dir);
 	}
 	
@@ -95,10 +105,10 @@ public class TracerMain {
 	}
 	
 	/**
-	 * Traces the given ray through the scene until att is less than ATT_MIN
+	 * Traces the given ray through the scene until att is less than <code>ATT_MIN</code>
 	 * @param ray the ray to trace
 	 * @param att current attenuation value
-	 * @return the Color3f this ray supplies
+	 * @return the color this ray yields
 	 */
 	public Color3f trace(Ray ray, float att) {
 		/*
@@ -138,13 +148,21 @@ public class TracerMain {
 		return lColor.mul(obj.m.color.mul(att).add(refColor));
 	}
 	
+	/**
+	 * Calculate the color contribution of a light on a position.
+	 * @param pos position to calculate for
+	 * @param normal normal vector of the object at <code>pos</code>
+	 * @param m material of the object at <code>pos</code>
+	 * @param light light to calculate color for
+	 * @return the color contribution of <code>light</code>
+	 */
 	public Color3f traceLight(Vector3f pos, Vector3f normal, Material m, Light light) {
 		Ray toLight = new Ray(pos, new Vector3f(light.pos).sub(pos).normalize());
 		for (Shape obj : objects) {
 			float t = obj.collides(toLight);
 			if (t > 0) return Color3f.black;
 		}
-		//TODO: make the light do more work so that DirectionalLight and AmbientLight work
+		//TODO: make light.calcColor do more work so that DirectionalLight and AmbientLight work
 		return light.calcColor(pos, normal, m);
 	}
 	

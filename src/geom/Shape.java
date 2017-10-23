@@ -2,12 +2,15 @@ package geom;
 
 import org.joml.Vector3f;
 
+/**
+ * Superclass of all types of geometric object.
+ */
 public class Shape {
 	
 	public Material m;
 	
 	/**
-	 * Calculates the collision with the given ray
+	 * Calculates the minimum ray parameter at which a collision occurs with this object, if any
 	 * @param ray
 	 * @return minimum ray parameter, or -1 if no collision
 	 */

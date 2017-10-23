@@ -2,8 +2,16 @@ package geom;
 
 import org.joml.Vector3f;
 
+/**
+ * Represents an omnidirectional point light
+ */
 public class PointLight extends Light {
 	
+	/**
+	 *
+	 * @param pos position of the light
+	 * @param color color of the light
+	 */
 	public PointLight(Vector3f pos, Color3f color) {
 		this.pos = pos;
 		this.color = color;

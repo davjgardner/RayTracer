@@ -3,13 +3,19 @@ package geom;
 import org.joml.Vector3f;
 
 /**
- * Created by david on 10/22/2017.
+ * Represents an infinite plane in 3D space.
  */
 public class Plane extends Shape {
 	public static final float EPSILON = 0.00001f;
 	
 	public Vector3f normal, pos;
 	
+	/**
+	 *
+	 * @param normal normal vector of this plane
+	 * @param pos a point on this plane
+	 * @param m the material of this plane
+	 */
 	public Plane(Vector3f normal, Vector3f pos, Material m) {
 		this.normal = normal;
 		this.pos = pos;

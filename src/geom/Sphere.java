@@ -2,31 +2,43 @@ package geom;
 
 import org.joml.Vector3f;
 
+/**
+ * Represents a sphere in 3D space.
+ */
 public class Sphere extends Shape {
 	
 	public Vector3f center;
 	public float radius;
 	
+	/**
+	 * Creates a sphere at (0, 0, 0) with <code>radius</code> 1.
+	 */
 	public Sphere() {
 		center = new Vector3f();
 		radius = 1f;
 	}
 	
+	/**
+	 *
+	 * @param pos position of the Sphere
+	 * @param radius radius of the Sphere
+	 */
 	public Sphere(Vector3f pos, float radius) {
 		this.center = pos;
 		this.radius = radius;
 	}
 	
+	/**
+	 *
+	 * @param pos position of the Sphere
+	 * @param radius radius of the Sphere
+	 * @param material material properties of the Sphere
+	 */
 	public Sphere(Vector3f pos, float radius, Material material) {
 		this(pos, radius);
 		this.m = material;
 	}
 	
-	/**
-	 * Calculates the collision with the given ray
-	 * @param ray
-	 * @return minimum ray parameter, or -1 if no collision
-	 */
 	@Override
 	public float collides(Ray ray) {
 		Vector3f v = new Vector3f(ray.origin).sub(this.center);
@@ -38,10 +50,10 @@ public class Sphere extends Shape {
 		float t2 = -vdotd - sdisc;
 		float t = Math.min(t1, t2);
 		if (t < 0) return -1;
-//		System.out.println("Hit!");
 		return t;
 	}
 	
+	@Override
 	public Vector3f normalAt(Vector3f pos) {
 		return new Vector3f(pos).sub(center).normalize();
 	}
