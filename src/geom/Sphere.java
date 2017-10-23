@@ -1,5 +1,6 @@
 package geom;
 
+import light.Material;
 import org.joml.Vector3f;
 
 /**

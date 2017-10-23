@@ -1,4 +1,4 @@
-package geom;
+package light;
 
 import org.joml.Vector3f;
 

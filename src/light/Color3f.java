@@ -1,4 +1,4 @@
-package geom;
+package light;
 
 /**
  * Encapsulates a three-component color in r, g, b.

@@ -1,4 +1,4 @@
-package geom;
+package light;
 
 /**
  * Encapsulates the material properties of an object
