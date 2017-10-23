@@ -36,18 +36,18 @@ public class TracerMain {
 		
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		
-		objects.add(new Sphere(new Vector3f(1, 0, -4f), 1.0f,
-				new Material(Color3f.red, 0.3f)));
+		objects.add(new Sphere(new Vector3f(1, 0, -6f), 1.0f,
+				new Material(Color3f.red, 1.0f)));
 		
-		objects.add(new Sphere(new Vector3f(-1.0f, 0.0f, -4f), 1.0f,
-				new Material(Color3f.blue, 0.3f)));
+		objects.add(new Sphere(new Vector3f(-1.0f, 0.0f, -6f), 1.0f,
+				new Material(Color3f.blue, 1.0f)));
 		
 		Plane ground = new Plane(new Vector3f(0.0f, 1.0f, 0.0f),
 				new Vector3f(0.0f, -2.0f, 0.0f),
-				new Material(new Color3f(0.0f, 0.3f, 0.0f), 0.3f));
+				new Material(new Color3f(0.3f, 0.3f, 0.2f), 0.3f));
 		objects.add(ground);
 		
-		PointLight light = new PointLight(new Vector3f(0, 0f, 0.0f), Color3f.white);
+		PointLight light = new PointLight(new Vector3f(0, 1.0f, -1.0f), Color3f.white);
 		lights.add(light);
 		
 		//lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
@@ -134,7 +134,7 @@ public class TracerMain {
 		
 		// do reflection
 		Vector3f reflect = new Vector3f(ray.direction).reflect(normal);
-		Color3f refColor = trace(new Ray(pos, reflect), att * 0.75f);
+		Color3f refColor = trace(new Ray(pos, reflect), att * 0.75f).mulThis(obj.m.reflectance);
 		return lColor.mul(obj.m.color.mul(att).add(refColor));
 	}
 	

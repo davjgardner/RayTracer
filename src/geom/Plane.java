@@ -21,7 +21,7 @@ public class Plane extends Shape {
 		// For now, assume any parallel rays do not intersect
 		float d = ray.direction.dot(normal);
 		if (Math.abs(d) < EPSILON) return -1;
-		float t = normal.dot(new Vector3f(pos).sub(ray.origin))
+		float t = - normal.dot(new Vector3f(ray.origin).sub(pos))
 				/ normal.dot(ray.direction);
 		return (t >= 0)? t : -1;
 	}
