@@ -139,8 +139,8 @@ public class TracerMain {
 		Vector3f normal = obj.normalAt(pos);
 		Color3f lColor = new Color3f();
 		for (Light l : lights) {
-			
-			lColor.addThis(traceLight(pos, normal, obj.m, l));
+			lColor.addThis(l.traceLight(pos, normal, obj.m, objects));
+			//lColor.addThis(traceLight(pos, normal, obj.m, l));
 		}
 		
 		// do reflection
