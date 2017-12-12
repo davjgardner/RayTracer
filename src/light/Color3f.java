@@ -33,6 +33,16 @@ public class Color3f {
 		this.b = b;
 	}
 	
+	/**
+	 * Creats a copy of the given color
+	 * @param c
+	 */
+	public Color3f(Color3f c) {
+		this.r = c.r;
+		this.g = c.g;
+		this.b = c.b;
+	}
+	
 	
 	/**
 	 * Multiplies this color by the given color.
@@ -133,10 +143,15 @@ public class Color3f {
 		return this;
 	}
 	
-	public static Color3f black = new Color3f();
-	public static Color3f white = new Color3f(1.0f);
-	public static Color3f red = new Color3f(1.0f, 0.0f, 0.0f);
-	public static Color3f green = new Color3f(0.0f, 1.0f, 0.0f);
-	public static Color3f blue = new Color3f(0.0f, 0.0f, 1.0f);
+	@Override
+	public String toString() {
+		return "(" + r + ", " + g + ", " + b + ")";
+	}
+	
+	public static final Color3f black = new Color3f();
+	public static final Color3f white = new Color3f(1.0f);
+	public static final Color3f red = new Color3f(1.0f, 0.0f, 0.0f);
+	public static final Color3f green = new Color3f(0.0f, 1.0f, 0.0f);
+	public static final Color3f blue = new Color3f(0.0f, 0.0f, 1.0f);
 	
 }

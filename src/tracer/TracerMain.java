@@ -27,11 +27,11 @@ public class TracerMain {
 	/**
 	 * Screen width (pixels)
 	 */
-	int width = 1000;
+	int width = 1500;
 	/**
 	 * Screen height (pixels)
 	 */
-	int height = 1000;
+	int height = 1500;
 	
 	
 	BufferedImage img;
@@ -66,9 +66,11 @@ public class TracerMain {
 		objects.add(ground);
 		
 		PointLight light = new PointLight(new Vector3f(0, 1.0f, -1.0f), Color3f.white);
-		lights.add(light);
+		//lights.add(light);
 		
-		lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
+		//lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
+		lights.add(new DiskLight(new Vector3f(0, 1.0f, -1.0f), new Vector3f(0, -1.0f, 1.0f).normalize(),
+				0.5f, Color3f.white));//*/
 		
 		render();
 		
@@ -100,6 +102,8 @@ public class TracerMain {
 		for (int x=0; x<width; x++) {
 			for (int y=0; y<height; y++) {
 				Color3f c = trace(cast(x, y), 1.0f);
+				if (x % 50 == 0 && y % 50 == 0)
+					System.out.println(c);
 				img.setRGB(x, y, c.getRGB());
 			}
 		}
