@@ -1,10 +1,7 @@
 package tracer;
 
 import geom.*;
-import light.Color3f;
-import light.Light;
-import light.Material;
-import light.PointLight;
+import light.*;
 import org.joml.Vector3f;
 
 import javax.swing.*;

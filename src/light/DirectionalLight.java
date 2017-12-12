@@ -5,9 +5,8 @@ import org.joml.Vector3f;
 /**
  * Represents a directional light
  */
-public class DirectionalLight {
+public class DirectionalLight extends Light {
 	public Vector3f dir;
-	public Color3f color;
 	
 	/**
 	 *
@@ -18,4 +17,12 @@ public class DirectionalLight {
 		this.dir = dir;
 		this.color = color;
 	}
+	
+	
+	@Override
+	public Color3f calcColor(Vector3f pos, Vector3f normal, Material m) {
+		float diffuseFactor = Math.max(normal.dot(dir), 0.0f);
+		Color3f diffuseColor = this.color.mul(diffuseFactor);
+		return diffuseColor;
+		}
 }
