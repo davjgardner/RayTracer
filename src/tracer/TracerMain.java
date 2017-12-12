@@ -68,7 +68,7 @@ public class TracerMain {
 		PointLight light = new PointLight(new Vector3f(0, 1.0f, -1.0f), Color3f.white);
 		lights.add(light);
 		
-		//lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
+		lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
 		
 		render();
 		
