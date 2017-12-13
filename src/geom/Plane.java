@@ -25,12 +25,10 @@ public class Plane extends Shape {
 	
 	@Override
 	public float collides(Ray ray) {
-		// For now, assume any parallel rays do not intersect
 		float d = ray.direction.dot(normal);
 		if (Math.abs(d) < EPSILON) return -1;
-		float t = - normal.dot(new Vector3f(ray.origin).sub(pos))
-				/ normal.dot(ray.direction);
-		return (t >= 0)? t : -1;
+		float t = - normal.dot(new Vector3f(ray.origin).sub(pos)) / d;
+		return (t > 0)? t : -1;
 	}
 	
 	@Override

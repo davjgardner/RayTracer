@@ -34,10 +34,11 @@ public class PointLight extends Light {
 	public Color3f traceLight(Vector3f pos, Vector3f normal, Material m,
 	                           List<Shape> objects) {
 		Ray toLight = new Ray(pos, new Vector3f(this.pos).sub(pos).normalize());
-		for (Shape obj : objects) {
+		return this.calcColor(pos, normal, m);
+		/*for (Shape obj : objects) {
 			float t = obj.collides(toLight);
 			if (t > 0) return Color3f.black;
 		}
-		return this.calcColor(pos, normal, m);
+		return this.calcColor(pos, normal, m);*/
 	}
 }
