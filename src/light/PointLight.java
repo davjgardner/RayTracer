@@ -33,12 +33,16 @@ public class PointLight extends Light {
 	@Override
 	public Color3f traceLight(Vector3f pos, Vector3f normal, Material m,
 	                           List<Shape> objects) {
-		Ray toLight = new Ray(pos, new Vector3f(this.pos).sub(pos).normalize());
-		return this.calcColor(pos, normal, m);
-		/*for (Shape obj : objects) {
+		Vector3f toLightv = new Vector3f(this.pos).sub(pos);
+		float d = toLightv.length();
+		Ray toLight = new Ray(pos, toLightv);
+		
+//		return this.calcColor(pos, normal, m);
+		for (Shape obj : objects) {
 			float t = obj.collides(toLight);
-			if (t > 0) return Color3f.black;
+			if (t > 0.0f && t < d && obj.m.refractionIndex == 0)
+				return new Color3f(0);
 		}
-		return this.calcColor(pos, normal, m);*/
+		return this.calcColor(pos, normal, m);
 	}
 }

@@ -101,10 +101,12 @@ public class DiskLight extends Light {
 		for (int i = 0; i < samples; i++) {
 			Vector3f lpos = samplePoint();
 			Color3f c = this.calcColor(pos, normal, m, lpos);
-			Ray toLight = new Ray(pos, lpos.sub(pos).normalize());
+			Vector3f toLightv = new Vector3f(lpos).sub(pos);
+			float d = toLightv.length();
+			Ray toLight = new Ray(pos, toLightv);
 			for (Shape obj : objects) {
 				float t = obj.collides(toLight);
-				if (t > 0) {
+				if (t > 0 && t < d && obj.m.refractionIndex == 0) {
 					c = Color3f.black;
 					break;
 				}
