@@ -61,40 +61,40 @@ public class TracerMain {
 		
 		// Initialize objects
 		objects.add(new Sphere(new Vector3f(1.0f, 0.0f, -6f), 1.0f,
-				new Material(Color3f.red, 0.0f)));
+				new Material(Color3f.red, 1.0f)));
 		
 		objects.add(new Sphere(new Vector3f(-1.0f, 0.0f, -6f), 1.0f,
-				new Material(Color3f.blue, 0.0f)));
+				new Material(Color3f.blue, 1.0f)));
 		
 		objects.add(new Sphere(new Vector3f(0.0f, 2.0f, -6f), 1.0f,
-				new Material(Color3f.green, 0.0f)));
+				new Material(Color3f.green, 1.0f)));
 		
 		
 		Plane ground = new Plane(new Vector3f(0.0f, 1.0f, 0.0f),
 				new Vector3f(0.0f, -2.0f, 0.0f),
 //				new Material(new Color3f(0.3f, 0.7f, 0.2f), 0.3f));
-				new Material(new Color3f(0.9f), 0.0f));
+				new Material(new Color3f(0.9f), 1.0f));
 		objects.add(ground);
 		Plane back = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
 				new Vector3f(0.0f, 0.0f, -10.0f),
-				new Material(new Color3f(0.5f, 0.2f, 0.7f), 0.0f));
+				new Material(new Color3f(0.5f, 0.2f, 0.7f), 1.0f));
 		objects.add(back);
 		Plane top = new Plane(new Vector3f(0.0f, -1.0f, 0.0f),
 				new Vector3f(0.0f, 4.0f, 0.0f),
 				//new Material(new Color3f(0.2f, 0.5f, 0.5f), 0.0f));
-				new Material(new Color3f(1.0f, 0.0f, 0.0f), 0.0f));
+				new Material(new Color3f(1.0f, 0.0f, 0.0f), 1.0f));
 		objects.add(top);
 		Plane front = new Plane(new Vector3f(0.0f, 0.0f, -1.0f),
 				new Vector3f(0.0f, 0.0f, 10.0f),
-				new Material(new Color3f(0.2f, 0.5f, 0.5f), 0.0f));
+				new Material(new Color3f(0.2f, 0.5f, 0.5f), 1.0f));
 		objects.add(front);
 		Plane right = new Plane(new Vector3f(-1.0f, 0.0f, 0.0f),
 				new Vector3f(2.0f, 0.0f, 0.0f),
-				new Material(new Color3f(0.2f, 0.7f, 0.2f), 0.0f));
+				new Material(new Color3f(0.2f, 0.7f, 0.2f), 1.0f));
 		objects.add(right);
 		Plane left = new Plane(new Vector3f(1.0f, 0.0f, 0.0f),
 				new Vector3f(-2.0f, 0.0f, 0.0f),
-				new Material(new Color3f(0.8f, 0.7f, 0.2f), 0.0f));
+				new Material(new Color3f(0.8f, 0.7f, 0.2f), 1.0f));
 		objects.add(left);
 		
 		/*Plane water = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
@@ -114,7 +114,7 @@ public class TracerMain {
 		
 //		lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
 		
-		DiskLight dl = new DiskLight(new Vector3f(0, 4.0f, -2.0f),
+		DiskLight dl = new DiskLight(new Vector3f(0, 3.0f, -2.0f),
 				new Vector3f(0, -1.0f, 1.0f).normalize(), 0.5f,
 				Color3f.white);
 //		lights.add(dl);
@@ -138,7 +138,7 @@ public class TracerMain {
 		sy -= 0.5f;
 		float x = sx/(width * supersample) * 2f - 1f;
 		float y = sy/(height * supersample) * 2f - 1f;
-		Vector3f dir = new Vector3f(x, y, -1).normalize();
+		Vector3f dir = new Vector3f(x, y, -1f).normalize();
 		return new Ray(new Vector3f(), dir);
 	}
 	
