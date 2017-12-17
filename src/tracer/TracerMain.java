@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import static geom.Shape.EPSILON;
+
 /**
  * Implements a basic ray-tracer.
  */
@@ -37,7 +39,6 @@ public class TracerMain {
 	
 	static final float supersample = 1f;
 	
-	private static final float EPSILON = 0.00001f;
 	private static final int MAX_BOUNCES = 10;
 	
 	BufferedImage img;
@@ -46,6 +47,7 @@ public class TracerMain {
 	List<Shape> objects = new ArrayList<>();
 	List<Light> lights = new ArrayList<>();
 	
+	SpaceTree tree;
 	
 	public TracerMain() {
 		frame = new JFrame("Ray Tracer") {
@@ -60,7 +62,7 @@ public class TracerMain {
 		img = new BufferedImage((int) (width * supersample), (int) (height * supersample), BufferedImage.TYPE_INT_RGB);
 		
 		// Initialize objects
-		/*objects.add(new Sphere(new Vector3f(1.0f, 0.0f, -6f), 1.0f,
+		objects.add(new Sphere(new Vector3f(1.0f, 0.0f, -6f), 1.0f,
 				new Material(Color3f.red, 1.0f)));
 		
 		objects.add(new Sphere(new Vector3f(-1.0f, 0.0f, -6f), 1.0f,
@@ -97,18 +99,19 @@ public class TracerMain {
 				new Material(new Color3f(0.8f, 0.7f, 0.2f), 1.0f));
 		objects.add(left);
 		
-		*//*Plane water = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
+		/*Plane water = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
 				new Vector3f(0.0f, 0.0f, -4.0f),
 				new Material(new Color3f(0), 1.0f, 1.5f));
-		objects.add(water);*//*
+		objects.add(water);
 		
 		objects.add(new Sphere(new Vector3f(0.0f, 0.3f, -2.0f), 0.4f,
 				new Material(Color3f.black, 1.0f, 1.5f)));
-		*/
+				*/
+		
 		PointLight pl = new PointLight(new Vector3f(0, 1.0f, -2.0f), new Color3f(0.8f));
 		lights.add(pl);
 		
-		Sphere s1 = new Sphere(new Vector3f(-2.0f, 0.0f, -3.0f), 0.5f,
+		/*Sphere s1 = new Sphere(new Vector3f(-2.0f, 0.0f, -3.0f), 0.5f,
 				new Material(Color3f.red, 0.0f));
 		objects.add(s1);
 		
@@ -118,15 +121,35 @@ public class TracerMain {
 		
 		Sphere s3 = new Sphere(new Vector3f(2.0f, 1.0f, -3.0f), 0.5f,
 				new Material(Color3f.green, 0.0f));
-		objects.add(s3);
+//		objects.add(s3);
 		
 		Sphere s4 = new Sphere(new Vector3f(2.0f, 0.0f, -3.0f), 0.5f,
 				new Material(Color3f.purple, 0.0f));
 		//objects.add(s4);
 		
 		Sphere s5 = new Sphere(new Vector3f(0.0f, 0.0f, -3.0f), 0.5f,
-				new Material(Color3f.purple, 0.0f));
+				new Material(Color3f.purple, 0.0f));*/
 //		objects.add(s5);
+		
+		/*Sphere s6 = new Sphere(new Vector3f(1.0f, 1.0f, -3.0f), 0.5f,
+				new Material(Color3f.purple, 0.0f));
+		objects.add(s6);
+		
+		Sphere s7 = new Sphere(new Vector3f(1.0f, -1.0f, -3.0f), 0.5f,
+				new Material(Color3f.purple, 0.0f));
+		objects.add(s7);
+		
+		Sphere s8 = new Sphere(new Vector3f(-1.0f, 1.0f, -3.0f), 0.5f,
+				new Material(Color3f.purple, 0.0f));
+		objects.add(s8);
+		
+		Sphere s9 = new Sphere(new Vector3f(-1.0f, -1.0f, -3.0f), 0.5f,
+				new Material(Color3f.purple, 0.0f));
+		objects.add(s9);*/
+		
+		AlignedBox box = new AlignedBox(new Vector3f(5.0f, 5.0f, 0f), 10.0f, 10.0f, 20.0f,
+				new Material(Color3f.white, 0.0f));
+//		objects.add(box);
 		
 		//		lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
 		
@@ -135,7 +158,7 @@ public class TracerMain {
 				Color3f.white);
 //		lights.add(dl);
 		
-		SpaceTree tree = new SpaceTree(objects, new Vector3f(), new Vector3f(20.0f));
+		tree = new SpaceTree(objects, new Vector3f(), new Vector3f(20.0f));
 		tree.createTree(SpaceTree.X, 0);
 		tree.print(0);
 		
@@ -282,7 +305,9 @@ public class TracerMain {
 		float mint = -1;
 		Shape obj = null;
 		// find closest object
-		for (Shape s : objects) {
+		List<Shape> checkList = tree.getCheckList(ray);
+		for (Shape s : checkList) {
+			//System.out.print(s + ", ");
 			float t = s.collides(ray);
 			if (t > 0) {
 				if (t < mint || obj == null) {
@@ -290,7 +315,16 @@ public class TracerMain {
 					obj = s;
 				}
 			}
+//			System.out.println("t = " + t);
 		}
+		/*if (obj != null) {
+			System.out.println("obj = " + obj);
+//			System.out.println("mint = " + mint);
+		}
+		for (Shape s : checkList) {
+			System.out.print(s + ", ");
+		}
+		System.out.println();*/
 		if(obj == null) return Color3f.black;
 		// do light calculation
 		Vector3f pos = new Vector3f(ray.origin).add(new Vector3f(ray.direction).mul(mint));

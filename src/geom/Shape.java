@@ -8,6 +8,8 @@ import org.joml.Vector3f;
  */
 public abstract class Shape {
 	
+	public static final float EPSILON = 0.00001f;
+	
 	public Material m;
 	
 	/**
@@ -35,3 +37,4 @@ public abstract class Shape {
 	public abstract int planePartition(Plane p);
 	
 }
+

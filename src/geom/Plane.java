@@ -7,7 +7,6 @@ import org.joml.Vector3f;
  * Represents an infinite plane in 3D space.
  */
 public class Plane extends Shape {
-	public static final float EPSILON = 0.00001f;
 	
 	public Vector3f normal, pos;
 	

@@ -6,6 +6,7 @@ import geom.Ray;
 import geom.Shape;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,17 +44,17 @@ public class SpaceTree {
 			case X:
 				rightBox = new AlignedBox(bounds.p1, new Vector3f(bounds.p2.x - size.x / 2, bounds.p2.y, bounds.p2.z));
 				leftBox = new AlignedBox(new Vector3f(bounds.p1.x + size.x / 2, bounds.p1.y, bounds.p1.z), bounds.p2);
-				part = new Plane(new Vector3f(1.0f, 0.0f, 0.0f), bounds.getCenter(), null);
+				part = new Plane(new Vector3f(-1.0f, 0.0f, 0.0f), bounds.getCenter(), null);
 				break;
 			case Y:
 				rightBox = new AlignedBox(bounds.p1, new Vector3f(bounds.p2.x, bounds.p2.y - size.y / 2, bounds.p2.z));
 				leftBox = new AlignedBox(new Vector3f(bounds.p1.x, bounds.p1.y + size.y / 2, bounds.p1.z), bounds.p2);
-				part = new Plane(new Vector3f(0.0f, 1.0f, 0.0f), bounds.getCenter(), null);
+				part = new Plane(new Vector3f(0.0f, -1.0f, 0.0f), bounds.getCenter(), null);
 				break;
 			case Z:
 				rightBox = new AlignedBox(bounds.p1, new Vector3f(bounds.p2.x, bounds.p2.y, bounds.p2.z - size.z / 2));
 				leftBox = new AlignedBox(new Vector3f(bounds.p1.x, bounds.p1.y, bounds.p1.z + size.z / 2), bounds.p2);
-				part = new Plane(new Vector3f(0.0f, 0.0f, 1.0f), bounds.getCenter(), null);
+				part = new Plane(new Vector3f(0.0f, 0.0f, -1.0f), bounds.getCenter(), null);
 				break;
 		}
 		List<Shape> leftList = new LinkedList<>(), rightList = new LinkedList<>();
@@ -79,12 +80,9 @@ public class SpaceTree {
 				|| (leftList.isEmpty() || rightList.isEmpty())) {
 			// partition did nothing, don't create children
 		} else {
-			for (Shape s : leftList) {
-				shapes.remove(s);
-			}
-			for (Shape s : rightList) {
-				shapes.remove(s);
-			}
+			shapes.removeAll(leftList);
+			shapes.removeAll(rightList);
+			
 			left = new SpaceTree(leftList, leftBox.getCenter(), leftBox.getSize());
 			left.createTree((axis + 1) % 3, level + 1);
 			right = new SpaceTree(rightList, rightBox.getCenter(), rightBox.getSize());
@@ -97,7 +95,13 @@ public class SpaceTree {
 	}
 	
 	List<Shape> getCheckList(Ray ray) {
-		return null;
+		List<Shape> checkList = new LinkedList<>();
+		if (bounds.collides(ray) >= 0) {
+			checkList.addAll(shapes);
+			if (left != null) checkList.addAll(left.getCheckList(ray));
+			if (right != null) checkList.addAll(right.getCheckList(ray));
+		}
+		return checkList;
 	}
 	
 	void print(int indent) {

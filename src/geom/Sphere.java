@@ -71,4 +71,9 @@ public class Sphere extends Shape {
 			return Shape.MINUS;
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return "Sphere" + center;
+	}
 }
