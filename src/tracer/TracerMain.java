@@ -102,11 +102,11 @@ public class TracerMain {
 		/*Plane water = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
 				new Vector3f(0.0f, 0.0f, -4.0f),
 				new Material(new Color3f(0), 1.0f, 1.5f));
-		objects.add(water);
+		objects.add(water);*/
 		
 		objects.add(new Sphere(new Vector3f(0.0f, 0.3f, -2.0f), 0.4f,
 				new Material(Color3f.black, 1.0f, 1.5f)));
-				*/
+				
 		
 		PointLight pl = new PointLight(new Vector3f(0, 1.0f, -2.0f), new Color3f(0.8f));
 		lights.add(pl);
@@ -181,7 +181,8 @@ public class TracerMain {
 		sy -= 0.5f;
 		float x = sx/(width * supersample) * 2f - 1f;
 		float y = sy/(height * supersample) * 2f - 1f;
-		Vector3f dir = new Vector3f(x, y, -1f).normalize();
+		float z = -1 / (float) Math.tan(FOV / 2);
+		Vector3f dir = new Vector3f(x, y, z).normalize();
 		return new Ray(new Vector3f(), dir);
 	}
 	
