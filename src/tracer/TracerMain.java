@@ -60,7 +60,7 @@ public class TracerMain {
 		img = new BufferedImage((int) (width * supersample), (int) (height * supersample), BufferedImage.TYPE_INT_RGB);
 		
 		// Initialize objects
-		objects.add(new Sphere(new Vector3f(1.0f, 0.0f, -6f), 1.0f,
+		/*objects.add(new Sphere(new Vector3f(1.0f, 0.0f, -6f), 1.0f,
 				new Material(Color3f.red, 1.0f)));
 		
 		objects.add(new Sphere(new Vector3f(-1.0f, 0.0f, -6f), 1.0f,
@@ -97,27 +97,47 @@ public class TracerMain {
 				new Material(new Color3f(0.8f, 0.7f, 0.2f), 1.0f));
 		objects.add(left);
 		
-		/*Plane water = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
+		*//*Plane water = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
 				new Vector3f(0.0f, 0.0f, -4.0f),
 				new Material(new Color3f(0), 1.0f, 1.5f));
-		objects.add(water);*/
+		objects.add(water);*//*
 		
 		objects.add(new Sphere(new Vector3f(0.0f, 0.3f, -2.0f), 0.4f,
 				new Material(Color3f.black, 1.0f, 1.5f)));
-		
+		*/
 		PointLight pl = new PointLight(new Vector3f(0, 1.0f, -2.0f), new Color3f(0.8f));
 		lights.add(pl);
 		
-		Shape me = new Sphere(new Vector3f(0, 0, 0), 0.5f,
-				new Material(Color3f.black, 0f));
-//		objects.add(me);
+		Sphere s1 = new Sphere(new Vector3f(-2.0f, 0.0f, -3.0f), 0.5f,
+				new Material(Color3f.red, 0.0f));
+		objects.add(s1);
 		
-//		lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
+		Sphere s2 = new Sphere(new Vector3f(2.0f, -1.0f, -3.0f), 0.5f,
+				new Material(Color3f.blue, 0.0f));
+		objects.add(s2);
+		
+		Sphere s3 = new Sphere(new Vector3f(2.0f, 1.0f, -3.0f), 0.5f,
+				new Material(Color3f.green, 0.0f));
+		objects.add(s3);
+		
+		Sphere s4 = new Sphere(new Vector3f(2.0f, 0.0f, -3.0f), 0.5f,
+				new Material(Color3f.purple, 0.0f));
+		//objects.add(s4);
+		
+		Sphere s5 = new Sphere(new Vector3f(0.0f, 0.0f, -3.0f), 0.5f,
+				new Material(Color3f.purple, 0.0f));
+//		objects.add(s5);
+		
+		//		lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
 		
 		DiskLight dl = new DiskLight(new Vector3f(0, 3.0f, -2.0f),
 				new Vector3f(0, -1.0f, 1.0f).normalize(), 0.5f,
 				Color3f.white);
 //		lights.add(dl);
+		
+		SpaceTree tree = new SpaceTree(objects, new Vector3f(), new Vector3f(20.0f));
+		tree.createTree(SpaceTree.X, 0);
+		tree.print(0);
 		
 		img.getGraphics().drawRect(0, 0, img.getWidth(), img.getHeight());
 		render();

@@ -58,4 +58,17 @@ public class Sphere extends Shape {
 	public Vector3f normalAt(Vector3f pos) {
 		return new Vector3f(pos).sub(center).normalize();
 	}
+	
+	@Override
+	public int planePartition(Plane p) {
+		Vector3f v = new Vector3f(this.center).sub(p.pos);
+		float dist = v.dot(p.normal);
+		if (Math.abs(dist) < this.radius) {
+			return Shape.COLLIDE;
+		} else if (dist > 0) {
+			return Shape.PLUS;
+		} else {
+			return Shape.MINUS;
+		}
+	}
 }

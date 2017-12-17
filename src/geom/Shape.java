@@ -26,4 +26,12 @@ public abstract class Shape {
 	public abstract Vector3f normalAt(Vector3f pos);
 	
 	
+	public static final int COLLIDE = 0, PLUS = 1, MINUS = 2;
+	/**
+	 * Tests which side of the given plane this shape is on
+	 * @param p partitioning plane
+	 * @return Shape.COLLIDE for a collision, Shape.PLUS for +normal side of plane, Shape.MINUS for -normal side
+	 */
+	public abstract int planePartition(Plane p);
+	
 }

@@ -35,4 +35,16 @@ public class Plane extends Shape {
 	public Vector3f normalAt(Vector3f pos) {
 		return normal;
 	}
+	
+	@Override
+	public int planePartition(Plane p) {
+		// Check if the plane is parallel
+		if (Math.abs(p.normal.dot(this.normal)) - 1.0f < EPSILON) {
+			return Shape.COLLIDE;
+		} else if (new Vector3f(this.pos).sub(p.pos).dot(p.normal) > 0) {
+			return Shape.PLUS;
+		} else {
+			return Shape.MINUS;
+		}
+	}
 }

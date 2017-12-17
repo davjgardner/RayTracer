@@ -153,5 +153,6 @@ public class Color3f {
 	public static final Color3f red = new Color3f(1.0f, 0.0f, 0.0f);
 	public static final Color3f green = new Color3f(0.0f, 1.0f, 0.0f);
 	public static final Color3f blue = new Color3f(0.0f, 0.0f, 1.0f);
+	public static final Color3f purple = new Color3f(1.0f, 0.0f, 1.0f);
 	
 }
