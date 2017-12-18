@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Stack;
 
 import static geom.Shape.EPSILON;
@@ -62,22 +63,26 @@ public class TracerMain {
 		img = new BufferedImage((int) (width * supersample), (int) (height * supersample), BufferedImage.TYPE_INT_RGB);
 		
 		// Initialize objects
-		objects.add(new Sphere(new Vector3f(1.0f, 0.0f, -6f), 1.0f,
+		/*objects.add(new Sphere(new Vector3f(1.0f, 0.0f, -9f), 1.0f,
 				new Material(Color3f.red, 1.0f)));
 		
-		objects.add(new Sphere(new Vector3f(-1.0f, 0.0f, -6f), 1.0f,
+		objects.add(new Sphere(new Vector3f(-1.0f, 0.0f, -9f), 1.0f,
 				new Material(Color3f.blue, 1.0f)));
 		
-		objects.add(new Sphere(new Vector3f(0.0f, 2.0f, -6f), 1.0f,
-				new Material(Color3f.green, 1.0f)));
+		objects.add(new Sphere(new Vector3f(0.0f, 2.0f, -9f), 1.0f,
+				new Material(Color3f.green, 1.0f)));*/
 		
+		objects.add(new Sphere(new Vector3f(1.0f, 1.5f, -6f), 0.8f,
+				new Material(Color3f.black, 1.0f, 1.1f)));
+		
+		objects.add(new Sphere(new Vector3f(-1.0f, 1.0f, -6f), 0.5f,
+				new Material(Color3f.purple, 1.0f)));
 		
 		Plane ground = new Plane(new Vector3f(0.0f, 1.0f, 0.0f),
 				new Vector3f(0.0f, -2.0f, 0.0f),
-//				new Material(new Color3f(0.3f, 0.7f, 0.2f), 0.3f));
-				new Material(new Color3f(0.9f), 1.0f));
+				new Material(new Color3f(0.9f), 0.0f));
 		objects.add(ground);
-		Plane back = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
+		/*Plane back = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
 				new Vector3f(0.0f, 0.0f, -10.0f),
 				new Material(new Color3f(0.5f, 0.2f, 0.7f), 1.0f));
 		objects.add(back);
@@ -97,61 +102,36 @@ public class TracerMain {
 		Plane left = new Plane(new Vector3f(1.0f, 0.0f, 0.0f),
 				new Vector3f(-2.0f, 0.0f, 0.0f),
 				new Material(new Color3f(0.8f, 0.7f, 0.2f), 1.0f));
-		objects.add(left);
+		objects.add(left);*/
 		
 		/*Plane water = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
 				new Vector3f(0.0f, 0.0f, -4.0f),
 				new Material(new Color3f(0), 1.0f, 1.5f));
 		objects.add(water);*/
 		
-		objects.add(new Sphere(new Vector3f(0.0f, 0.3f, -2.0f), 0.4f,
-				new Material(Color3f.black, 1.0f, 1.5f)));
-				
+		/*objects.add(new Sphere(new Vector3f(0.0f, 0.3f, -2.0f), 0.4f,
+				new Material(Color3f.black, 1.0f, 1.5f)));*/
 		
-		PointLight pl = new PointLight(new Vector3f(0, 1.0f, -2.0f), new Color3f(0.8f));
+		Random rand = new Random();
+		for (int i = 0; i < 30; i++) {
+			for (int j = 0; j < 20; j++) {
+				objects.add(new Sphere(new Vector3f(i * 0.3f - 4.5f, j * 0.3f, -11.0f), 0.15f,
+						new Material(new Color3f(rand.nextFloat(), rand.nextFloat(), rand.nextFloat())
+								, 0.0f)));
+			}
+		}
+		
+		PointLight pl = new PointLight(new Vector3f(0, 6.0f, -2.0f), new Color3f(1.0f));
 		lights.add(pl);
 		
-		/*Sphere s1 = new Sphere(new Vector3f(-2.0f, 0.0f, -3.0f), 0.5f,
-				new Material(Color3f.red, 0.0f));
-		objects.add(s1);
-		
-		Sphere s2 = new Sphere(new Vector3f(2.0f, -1.0f, -3.0f), 0.5f,
-				new Material(Color3f.blue, 0.0f));
-		objects.add(s2);
-		
-		Sphere s3 = new Sphere(new Vector3f(2.0f, 1.0f, -3.0f), 0.5f,
-				new Material(Color3f.green, 0.0f));
-//		objects.add(s3);
-		
-		Sphere s4 = new Sphere(new Vector3f(2.0f, 0.0f, -3.0f), 0.5f,
-				new Material(Color3f.purple, 0.0f));
-		//objects.add(s4);
-		
-		Sphere s5 = new Sphere(new Vector3f(0.0f, 0.0f, -3.0f), 0.5f,
-				new Material(Color3f.purple, 0.0f));*/
-//		objects.add(s5);
-		
-		/*Sphere s6 = new Sphere(new Vector3f(1.0f, 1.0f, -3.0f), 0.5f,
-				new Material(Color3f.purple, 0.0f));
-		objects.add(s6);
-		
-		Sphere s7 = new Sphere(new Vector3f(1.0f, -1.0f, -3.0f), 0.5f,
-				new Material(Color3f.purple, 0.0f));
-		objects.add(s7);
-		
-		Sphere s8 = new Sphere(new Vector3f(-1.0f, 1.0f, -3.0f), 0.5f,
-				new Material(Color3f.purple, 0.0f));
-		objects.add(s8);
-		
-		Sphere s9 = new Sphere(new Vector3f(-1.0f, -1.0f, -3.0f), 0.5f,
-				new Material(Color3f.purple, 0.0f));
-		objects.add(s9);*/
+		PointLight pl2 = new PointLight(new Vector3f(4.0f, 0.5f, -2.0f), new Color3f(0.3f));
+		lights.add(pl2);
 		
 		AlignedBox box = new AlignedBox(new Vector3f(5.0f, 5.0f, 0f), 10.0f, 10.0f, 20.0f,
 				new Material(Color3f.white, 0.0f));
 //		objects.add(box);
 		
-		//		lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
+		//lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
 		
 		DiskLight dl = new DiskLight(new Vector3f(0, 3.0f, -2.0f),
 				new Vector3f(0, -1.0f, 1.0f).normalize(), 0.5f,
@@ -164,7 +144,7 @@ public class TracerMain {
 		
 		img.getGraphics().drawRect(0, 0, img.getWidth(), img.getHeight());
 //		render();
-		renderDOF(0.05f, 6f, 20);
+		renderDOF(0.6f, 6f, 20);
 		
 		frame.repaint();
 		frame.setVisible(true);
@@ -241,11 +221,11 @@ public class TracerMain {
 					secColor.addThis(c.mul(invSamples));
 				}
 				// 50/50 blend of primary and secondary colors - tunable
-				Color3f outColor = primColor.mul(0.5f).add(secColor.mul(0.5f));
+				Color3f outColor = primColor.mul(0.3f).add(secColor.mul(0.7f));
 				img.setRGB(x, y, outColor.getRGB());
 			}
 			int p;
-			if ((p = (int) (((float) x / (width * supersample)) * 100f)) % 10 == 0) {
+			if ((p = (int) (((float) x / (width * supersample)) * 100f)) % 1 == 0) {
 				System.out.println(p + "%");
 			}
 		}
