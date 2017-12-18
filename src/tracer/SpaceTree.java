@@ -4,7 +4,7 @@ import geom.AlignedBox;
 import geom.Plane;
 import geom.Ray;
 import geom.Shape;
-import org.joml.Vector3f;
+import geom.Vector3f;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -34,8 +34,8 @@ class SpaceTree {
 		this.shapes = new LinkedList<>();
 		this.shapes.addAll(shapes);
 		this.size = size;
-		Vector3f halfSize = new Vector3f(size).mul(0.5f);
-		this.bounds = new AlignedBox(new Vector3f(center).sub(halfSize), new Vector3f(center).add(halfSize));
+		Vector3f halfSize = size.mul(0.5f);
+		this.bounds = new AlignedBox(center.sub(halfSize), center.add(halfSize));
 	}
 	
 	/**

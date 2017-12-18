@@ -1,7 +1,6 @@
 package geom;
 
 import light.Material;
-import org.joml.Vector3f;
 
 /**
  * Represents an axis-aligned box
@@ -23,17 +22,17 @@ public class AlignedBox extends Shape {
 	
 	public AlignedBox(Vector3f center, float sx, float sy, float sz, Material m) {
 		Vector3f halfSize = new Vector3f(sx/2, sy/2, sz/2);
-		this.p1 = new Vector3f(center).sub(halfSize);
-		this.p2 =  new Vector3f(center).add(halfSize);
+		this.p1 = center.sub(halfSize);
+		this.p2 =  center.add(halfSize);
 		this.m = m;
 	}
 	
 	public Vector3f getCenter() {
-		return new Vector3f(p1).add(new Vector3f(p2).sub(p1).mul(0.5f));
+		return p1.add(p2.sub(p1).mul(0.5f));
 	}
 	
 	public Vector3f getSize() {
-		return new Vector3f(p2).sub(p1);
+		return p2.sub(p1);
 	}
 	
 	public float collides(Ray ray) {
@@ -64,7 +63,7 @@ public class AlignedBox extends Shape {
 	
 	@Override
 	public Vector3f normalAt(Vector3f pos) {
-		Vector3f v = new Vector3f(pos).sub(getCenter());
+		Vector3f v = pos.sub(getCenter());
 		if (Math.abs(v.x) > Math.abs(v.y) && Math.abs(v.x) > Math.abs(v.z)) {
 			return new Vector3f(v.x / Math.abs(v.x), 0.0f, 0.0f);
 		} else if (Math.abs(v.y) > Math.abs(v.x) && Math.abs(v.y) > Math.abs(v.z)) {

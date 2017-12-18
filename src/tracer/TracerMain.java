@@ -3,7 +3,6 @@ package tracer;
 import geom.*;
 import geom.Shape;
 import light.*;
-import org.joml.Vector3f;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +10,6 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Stack;
 
 import static geom.Shape.EPSILON;
 
@@ -65,16 +63,27 @@ public class TracerMain {
 		img = new BufferedImage((int) (width * supersample), (int) (height * supersample), BufferedImage.TYPE_INT_RGB);
 		
 		// Initialize objects
-		/*objects.add(new Sphere(new Vector3f(1.0f, 0.0f, -9f), 1.0f,
+		objects.add(new Sphere(new Vector3f(1.0f, 0.0f, -9f), 1.0f,
 				new Material(Color3f.red, 1.0f)));
 		
 		objects.add(new Sphere(new Vector3f(-1.0f, 0.0f, -9f), 1.0f,
 				new Material(Color3f.blue, 1.0f)));
 		
 		objects.add(new Sphere(new Vector3f(0.0f, 2.0f, -9f), 1.0f,
-				new Material(Color3f.green, 1.0f)));*/
+				new Material(Color3f.green, 1.0f)));
 		
-		objects.add(new Sphere(new Vector3f(1.0f, 1.5f, -6f), 0.8f,
+		Plane back = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
+				new Vector3f(0.0f, 0.0f, -10.0f),
+				new Material(new Color3f(0.5f, 0.2f, 0.7f), 1.0f));
+		objects.add(back);
+		
+		// Glass Sphere
+		objects.add(new Sphere(new Vector3f(0.5f, 0.4f, -3.0f), 0.3f,
+				new Material(Color3f.black, 1.0f, 1.3f)));
+		
+		
+		// Depth of Field images (takes several minutes to render due to number of objects)
+		/*objects.add(new Sphere(new Vector3f(1.0f, 1.5f, -6f), 0.8f,
 				new Material(Color3f.black, 1.0f, 1.1f)));
 		
 		objects.add(new Sphere(new Vector3f(-1.0f, 1.0f, -6f), 0.5f,
@@ -84,35 +93,6 @@ public class TracerMain {
 				new Vector3f(0.0f, -2.0f, 0.0f),
 				new Material(new Color3f(0.9f), 0.0f));
 		objects.add(ground);
-		/*Plane back = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
-				new Vector3f(0.0f, 0.0f, -10.0f),
-				new Material(new Color3f(0.5f, 0.2f, 0.7f), 1.0f));
-		objects.add(back);
-		Plane top = new Plane(new Vector3f(0.0f, -1.0f, 0.0f),
-				new Vector3f(0.0f, 4.0f, 0.0f),
-				//new Material(new Color3f(0.2f, 0.5f, 0.5f), 0.0f));
-				new Material(new Color3f(1.0f, 0.0f, 0.0f), 1.0f));
-		objects.add(top);
-		Plane front = new Plane(new Vector3f(0.0f, 0.0f, -1.0f),
-				new Vector3f(0.0f, 0.0f, 10.0f),
-				new Material(new Color3f(0.2f, 0.5f, 0.5f), 1.0f));
-		objects.add(front);
-		Plane right = new Plane(new Vector3f(-1.0f, 0.0f, 0.0f),
-				new Vector3f(2.0f, 0.0f, 0.0f),
-				new Material(new Color3f(0.2f, 0.7f, 0.2f), 1.0f));
-		objects.add(right);
-		Plane left = new Plane(new Vector3f(1.0f, 0.0f, 0.0f),
-				new Vector3f(-2.0f, 0.0f, 0.0f),
-				new Material(new Color3f(0.8f, 0.7f, 0.2f), 1.0f));
-		objects.add(left);*/
-		
-		/*Plane water = new Plane(new Vector3f(0.0f, 0.0f, 1.0f),
-				new Vector3f(0.0f, 0.0f, -4.0f),
-				new Material(new Color3f(0), 1.0f, 1.5f));
-		objects.add(water);*/
-		
-		/*objects.add(new Sphere(new Vector3f(0.0f, 0.3f, -2.0f), 0.4f,
-				new Material(Color3f.black, 1.0f, 1.5f)));*/
 		
 		Random rand = new Random();
 		for (int i = 0; i < 30; i++) {
@@ -121,32 +101,33 @@ public class TracerMain {
 						new Material(new Color3f(rand.nextFloat(), rand.nextFloat(), rand.nextFloat())
 								, 0.0f)));
 			}
-		}
+		}*/
 		
-		PointLight pl = new PointLight(new Vector3f(0, 6.0f, -2.0f), new Color3f(1.0f));
+		// Point Lights for hard shadows
+		/*PointLight pl = new PointLight(new Vector3f(0, 6.0f, -2.0f), new Color3f(1.0f));
 		lights.add(pl);
 		
 		PointLight pl2 = new PointLight(new Vector3f(4.0f, 0.5f, -2.0f), new Color3f(0.3f));
-		lights.add(pl2);
-		
-		AlignedBox box = new AlignedBox(new Vector3f(5.0f, 5.0f, 0f), 10.0f, 10.0f, 20.0f,
-				new Material(Color3f.white, 0.0f));
-//		objects.add(box);
+		lights.add(pl2);*/
 		
 		//lights.add(new AmbientLight(new Color3f(0.2f, 0.2f, 0.2f)));
 		
-		DiskLight dl = new DiskLight(new Vector3f(0, 3.0f, -2.0f),
+		// Add this light instead of the PointLights for soft shadows
+		DiskLight dl = new DiskLight(new Vector3f(0, 0.0f, -5.0f),
 				new Vector3f(0, -1.0f, 1.0f).normalize(), 0.5f,
 				Color3f.white);
-//		lights.add(dl);
+		lights.add(dl);
 		
+		// Create spatial partitioning tree
 		tree = new SpaceTree(objects, new Vector3f(), new Vector3f(20.0f));
 		tree.createTree(SpaceTree.X, 0);
 		tree.print(0);
 		
-		img.getGraphics().drawRect(0, 0, img.getWidth(), img.getHeight());
-//		render();
-		renderDOF(0.6f, 6f, 20);
+		// Normal render call
+		render();
+		
+		// Depth-of-Field render call
+		//renderDOF(0.6f, 6f, 20);
 		
 		frame.repaint();
 		frame.setVisible(true);
@@ -205,7 +186,7 @@ public class TracerMain {
 				// Cast out [samples] secondary rays and average their colors
 				for (int i = 0; i < samples; i++) {
 					Vector3f pos = lens.samplePoint();
-					Ray secRay = new Ray(pos, new Vector3f(focalPoint).sub(pos));
+					Ray secRay = new Ray(pos, focalPoint.sub(pos));
 					Color3f c = trace(secRay, 1.0f, 1);
 					secColor.addThis(c.mul(invSamples));
 				}
@@ -228,12 +209,12 @@ public class TracerMain {
 	 * @return direction of refracted ray
 	 */
 	private Vector3f refract(Ray in, Vector3f normal, float n1, float n2) {
-		normal = new Vector3f(normal).normalize();
-		Vector3f dir = new Vector3f(in.direction).normalize();
+		normal = normal.normalize();
+		Vector3f dir = in.direction.normalize();
 		float r = n1 / n2;
 		float c = - normal.dot(dir);
 		if (c < EPSILON) {
-			normal = new Vector3f(normal).negate();
+			normal = normal.negate();
 			c = - normal.dot(dir);
 		}
 		// Check for total internal reflection
@@ -244,8 +225,7 @@ public class TracerMain {
 			System.out.println("c = " + c);
 			return null;
 		}
-		return new Vector3f(dir).mul(r).add(
-				new Vector3f(normal).mul(r * c - (float) Math.sqrt(tir)));
+		return dir.mul(r).add(normal.mul(r * c - (float) Math.sqrt(tir)));
 	}
 	
 	/**
@@ -257,8 +237,8 @@ public class TracerMain {
 	 * @return reflectance coefficient
 	 */
 	private float calcReflectance(Ray in, Vector3f normal, float n1, float n2) {
-		Vector3f dir = new Vector3f(in.direction).normalize();
-		normal = new Vector3f(normal).normalize();
+		Vector3f dir = in.direction.normalize();
+		normal = normal.normalize();
 		// r0 = reflection coefficient for a ray parallel to normal
 		if (normal.dot(dir) < EPSILON) normal = normal.negate();
 		float r0 = (n1 - n2) / (n1 + n2) * (n1 - n2) / (n1 + n2);
@@ -301,7 +281,7 @@ public class TracerMain {
 		}
 		if(obj == null) return Color3f.black;
 		// do light calculation
-		Vector3f pos = new Vector3f(ray.origin).add(new Vector3f(ray.direction).mul(mint));
+		Vector3f pos = ray.origin.add(ray.direction.mul(mint));
 		Vector3f normal = obj.normalAt(pos);
 		Color3f lColor = new Color3f();
 		for (Light l : lights) {
@@ -337,7 +317,7 @@ public class TracerMain {
 		// do reflection
 		Color3f refColor = new Color3f(0.0f);
 		if (obj.m.reflectance > 0) {
-			Vector3f reflect = new Vector3f(ray.direction).reflect(normal);
+			Vector3f reflect = ray.direction.reflect(normal);
 			refColor = trace(new Ray(pos, reflect), att * 0.75f,
 					bounces + 1).mulThis(reflectance);
 		}

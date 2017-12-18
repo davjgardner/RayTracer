@@ -2,7 +2,7 @@ package light;
 
 import geom.Ray;
 import geom.Shape;
-import org.joml.Vector3f;
+import geom.Vector3f;
 
 import java.util.List;
 import java.util.Random;
@@ -69,7 +69,7 @@ public class DiskLight extends Light {
 		float sr = radius * (float) Math.sqrt(r);
 		float x = sr * (float) Math.cos(theta);
 		float y = sr * (float) Math.sin(theta);
-		Vector3f p = new Vector3f(u).mul(x).add(new Vector3f(v).mul(y)).add(pos);
+		Vector3f p = u.mul(x).add(v.mul(y)).add(pos);
 		return p;
 	}
 	
@@ -88,7 +88,7 @@ public class DiskLight extends Light {
 	 */
 	private Color3f calcColor(Vector3f pos, Vector3f normal, Material m,
 	                         Vector3f lpos) {
-		Vector3f toLight = new Vector3f(lpos).sub(pos).normalize();
+		Vector3f toLight = lpos.sub(pos).normalize();
 		float diffuseFactor = Math.max(normal.dot(toLight), 0.0f);
 		Color3f diffuseColor = this.color.mul(diffuseFactor);
 		return diffuseColor;
@@ -101,7 +101,7 @@ public class DiskLight extends Light {
 		for (int i = 0; i < samples; i++) {
 			Vector3f lpos = samplePoint();
 			Color3f c = this.calcColor(pos, normal, m, lpos);
-			Vector3f toLightv = new Vector3f(lpos).sub(pos);
+			Vector3f toLightv = lpos.sub(pos);
 			float d = toLightv.length();
 			Ray toLight = new Ray(pos, toLightv);
 			for (Shape obj : objects) {

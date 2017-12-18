@@ -1,7 +1,6 @@
 package geom;
 
 import light.Material;
-import org.joml.Vector3f;
 
 /**
  * [UNFINISHED]
@@ -20,14 +19,14 @@ public class Triangle extends Shape {
 		this.p3 = p3;
 		v1 = new Vector3f(p2).sub(p1);
 		v2 = new Vector3f(p3).sub(p1);
-		normal = new Vector3f(v1).cross(v2);
+		//normal = new Vector3f(v1).cross(v2); // Didn't implement cross product, not needed elsewhere
 	}
 	
 	@Override
 	public float collides(Ray ray) {
 		float d = ray.direction.dot(normal);
 		if (Math.abs(d) < EPSILON) return -1;
-		float t = - normal.dot(new Vector3f(ray.origin).sub(p1))
+		float t = - normal.dot(ray.origin.sub(p1))
 				/ normal.dot(ray.direction);
 		return (t >= 0)? t : -1;
 		// TODO: check if in bounds

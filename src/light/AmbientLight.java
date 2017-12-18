@@ -2,7 +2,7 @@ package light;
 
 import geom.Ray;
 import geom.Shape;
-import org.joml.Vector3f;
+import geom.Vector3f;
 
 import java.util.List;
 

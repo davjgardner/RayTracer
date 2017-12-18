@@ -2,7 +2,7 @@ package light;
 
 import geom.Ray;
 import geom.Shape;
-import org.joml.Vector3f;
+import geom.Vector3f;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class PointLight extends Light {
 	
 	@Override
 	public Color3f calcColor(Vector3f pos, Vector3f normal, Material m) {
-		Vector3f toLight = new Vector3f(this.pos).sub(pos).normalize();
+		Vector3f toLight = this.pos.sub(pos).normalize();
 		float diffuseFactor = Math.max(normal.dot(toLight), 0.0f);
 		Color3f diffuseColor = this.color.mul(diffuseFactor);
 		return diffuseColor;
@@ -33,7 +33,7 @@ public class PointLight extends Light {
 	@Override
 	public Color3f traceLight(Vector3f pos, Vector3f normal, Material m,
 	                           List<Shape> objects) {
-		Vector3f toLightv = new Vector3f(this.pos).sub(pos);
+		Vector3f toLightv = this.pos.sub(pos);
 		float d = toLightv.length();
 		Ray toLight = new Ray(pos, toLightv);
 		

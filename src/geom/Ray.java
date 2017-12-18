@@ -1,7 +1,5 @@
 package geom;
 
-import org.joml.Vector3f;
-
 /**
  * Represents a ray in 3D space with an origin and a direction.
  */
@@ -18,7 +16,7 @@ public class Ray {
 	public Ray(Vector3f origin, Vector3f direction) {
 		this.origin = origin;
 		this.direction = direction.normalize();
-		this.origin.add(new Vector3f(this.direction).mul(ERR_DELTA));
+		this.origin.addThis(this.direction.mul(ERR_DELTA));
 	}
 	
 	/**
@@ -27,7 +25,7 @@ public class Ray {
 	 * @return
 	 */
 	public Vector3f getPoint(float t) {
-		return new Vector3f(origin).add(new Vector3f(direction).mul(t));
+		return origin.add(direction.mul(t));
 	}
 	
 	@Override

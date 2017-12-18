@@ -1,7 +1,6 @@
 package geom;
 
 import light.Material;
-import org.joml.Vector3f;
 
 /**
  * Represents a sphere in 3D space.
@@ -42,7 +41,7 @@ public class Sphere extends Shape {
 	
 	@Override
 	public float collides(Ray ray) {
-		Vector3f v = new Vector3f(ray.origin).sub(this.center);
+		Vector3f v = ray.origin.sub(this.center);
 		float vdotd = v.dot(ray.direction);
 		float disc = vdotd * vdotd - (v.lengthSquared() - this.radius * this.radius);
 		if (disc < 0) return -1;
@@ -56,12 +55,12 @@ public class Sphere extends Shape {
 	
 	@Override
 	public Vector3f normalAt(Vector3f pos) {
-		return new Vector3f(pos).sub(center).normalize();
+		return pos.sub(center).normalize();
 	}
 	
 	@Override
 	public int planePartition(Plane p) {
-		Vector3f v = new Vector3f(this.center).sub(p.pos);
+		Vector3f v = this.center.sub(p.pos);
 		float dist = v.dot(p.normal);
 		if (Math.abs(dist) < this.radius) {
 			return Shape.COLLIDE;

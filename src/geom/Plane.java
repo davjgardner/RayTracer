@@ -1,7 +1,6 @@
 package geom;
 
 import light.Material;
-import org.joml.Vector3f;
 
 /**
  * Represents an infinite plane in 3D space.
@@ -26,7 +25,7 @@ public class Plane extends Shape {
 	public float collides(Ray ray) {
 		float d = ray.direction.dot(normal);
 		if (Math.abs(d) < EPSILON) return -1;
-		float t = - normal.dot(new Vector3f(ray.origin).sub(pos)) / d;
+		float t = - normal.dot(ray.origin.sub(pos)) / d;
 		return (t > 0)? t : -1;
 	}
 	
@@ -40,7 +39,7 @@ public class Plane extends Shape {
 		// Check if the plane is parallel
 		if (Math.abs(p.normal.dot(this.normal)) - 1.0f < EPSILON) {
 			return Shape.COLLIDE;
-		} else if (new Vector3f(this.pos).sub(p.pos).dot(p.normal) > 0) {
+		} else if (this.pos.sub(p.pos).dot(p.normal) > 0) {
 			return Shape.PLUS;
 		} else {
 			return Shape.MINUS;
