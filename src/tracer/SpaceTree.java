@@ -13,13 +13,12 @@ import java.util.List;
 /**
  * Spacial partitioning tree
  */
-public class SpaceTree {
+class SpaceTree {
 	private List<Shape> shapes;
 	
-	SpaceTree left, right;
-	Vector3f center;
-	Vector3f size;
-	AlignedBox bounds;
+	private SpaceTree left, right;
+	private Vector3f size;
+	private AlignedBox bounds;
 	
 	static final int X = 0, Y = 1, Z = 2;
 	
@@ -28,7 +27,6 @@ public class SpaceTree {
 	SpaceTree(List<Shape> shapes, Vector3f center, Vector3f size) {
 		this.shapes = new LinkedList<>();
 		this.shapes.addAll(shapes);
-		this.center = center;
 		this.size = size;
 		Vector3f halfSize = new Vector3f(size).mul(0.5f);
 		this.bounds = new AlignedBox(new Vector3f(center).sub(halfSize), new Vector3f(center).add(halfSize));
@@ -36,8 +34,6 @@ public class SpaceTree {
 	
 	void createTree(int axis, int level) {
 		if (shapes.size() <= 1 || level >= MAX_LEVEL) return;
-//		System.out.println("center = " + center);
-//		System.out.println("size = " + size);
 		Plane part = null;
 		AlignedBox leftBox = null, rightBox = null;
 		switch(axis) {

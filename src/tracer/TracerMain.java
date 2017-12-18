@@ -21,34 +21,36 @@ import static geom.Shape.EPSILON;
 public class TracerMain {
 	
 	/**
-	 * Minimum attenuation before no further tracing is done
-	 */
-	static final float ATT_MIN = 0.0001f;
-	/**
 	 * Field of view (not currently used)
 	 */
-	static final float FOV = (float) Math.toRadians(60);
+	private static final float FOV = (float) Math.toRadians(60);
 	
 	/**
 	 * Screen width (pixels)
 	 */
-	static final int width = 1000;
+	private static final int width = 1000;
 	/**
 	 * Screen height (pixels)
 	 */
-	static final int height = 1000;
+	private static final int height = 1000;
 	
-	static final float supersample = 1f;
+	/**
+	 * Supersampling constant: multiplied by width and height
+	 */
+	private static final float supersample = 1f;
 	
+	/**
+	 * Maximum times a ray is allowed to reflect or refract
+	 */
 	private static final int MAX_BOUNCES = 10;
 	
-	BufferedImage img;
-	JFrame frame;
+	private BufferedImage img;
+	private JFrame frame;
 	
-	List<Shape> objects = new ArrayList<>();
-	List<Light> lights = new ArrayList<>();
+	private List<Shape> objects = new ArrayList<>();
+	private List<Light> lights = new ArrayList<>();
 	
-	SpaceTree tree;
+	private SpaceTree tree;
 	
 	public TracerMain() {
 		frame = new JFrame("Ray Tracer") {
@@ -172,22 +174,13 @@ public class TracerMain {
 	 * Renders the image using a simple pinhole camera model
 	 */
 	public void render() {
-		float k = 0;
-		float total = width * height;
 		for (int x=0; x<width * supersample; x++) {
 			for (int y=0; y<height * supersample; y++) {
-//				Color3f c = traceIterative(cast(x, y), 0.9f, 20);
 				Color3f c = trace(cast(x, y), 1.0f, 1);
-				//if (x % 50 == 0 && y % 50 == 0)
-					//System.out.println(c);
 				img.setRGB(x, y, c.getRGB());
-				
-				k++;
 			}
-			int p;
-			if ((p = (int) (((float) x / (float) (width * supersample)) * 100f)) % 10 == 0) {
-				System.out.println(p + "%");
-			}
+			int p = (int) (((float) x / (width * supersample)) * 100f);
+			System.out.println(p + "%");
 		}
 	}
 	
@@ -212,22 +205,17 @@ public class TracerMain {
 				// Cast out [samples] secondary rays and average their colors
 				for (int i = 0; i < samples; i++) {
 					Vector3f pos = lens.samplePoint();
-//					System.out.println("pos = " + pos);
-//					System.out.println("pos.x = " + pos.x);
 					Ray secRay = new Ray(pos, new Vector3f(focalPoint).sub(pos));
-//					System.out.println("secRay = " + secRay);
 					Color3f c = trace(secRay, 1.0f, 1);
-//					System.out.println("c = " + c);
 					secColor.addThis(c.mul(invSamples));
 				}
-				// 50/50 blend of primary and secondary colors - tunable
+				// blend of primary and secondary colors - tunable
 				Color3f outColor = primColor.mul(0.3f).add(secColor.mul(0.7f));
 				img.setRGB(x, y, outColor.getRGB());
 			}
-			int p;
-			if ((p = (int) (((float) x / (width * supersample)) * 100f)) % 1 == 0) {
-				System.out.println(p + "%");
-			}
+			int p = (int) (((float) x / (width * supersample)) * 100f);
+			System.out.println(p + "%");
+			
 		}
 	}
 	
@@ -250,9 +238,6 @@ public class TracerMain {
 		}
 		// Check for total internal reflection
 		float tir = 1 - r * r * (1 - c * c);
-//		if (tir < 0) return new Vector3f(in.direction).reflect(new Vector3f(normal).negate());
-//		System.out.println("r = " + r);
-//		System.out.println("c = " + c);
 		if (tir < EPSILON) {
 			System.out.println("TIR");
 			System.out.println("r = " + r);
@@ -279,31 +264,6 @@ public class TracerMain {
 		float r0 = (n1 - n2) / (n1 + n2) * (n1 - n2) / (n1 + n2);
 		float f = 1 - normal.dot(dir); // 1 - cos(theta)
 		float r = r0 + (1 - r0) * f * f * f * f * f; // (1 - cos(theta))^5
-//		System.out.println("r0 = " + r0);
-//		System.out.println("f = " + f);
-//		System.out.println("r = " + r);
-		return r;
-	}
-	
-	private float fresnel(Ray in, Vector3f normal, float n1, float n2) {
-		float n = n1 / n2;
-		float cosi = in.direction.dot(normal);
-		float sini = (float) Math.sqrt(1 - cosi * cosi);
-		float rad = 1 - n * n  * (1 - cosi * cosi);
-		if (rad < EPSILON) System.out.println("TIR");
-		float cost = (float) Math.sqrt(rad);
-		/*float rs = (n1 * cosi - n2 * (float) Math.sqrt(1 - (n * sini) * (n * sini))) /
-				(n1 * cosi + n2 * (float) Math.sqrt(1 - (n * sini) * (n * sini)));
-		rs = rs * rs;
-		float rp = (n1 * (float) Math.sqrt(1 - (n * sini) * (n * sini)) - n2 * cosi) /
-				(n1 * (float) Math.sqrt(1 - (n * sini) * (n * sini)) + n2 * cosi);
-		rp = rp * rp;*/
-		float rs = (n1 * cosi - n2 * cost) / (n1 * cosi + n2 * cost);
-		rs = rs * rs;
-		float rp = (n1 * cost - n2 * cosi) / (n1 * cost + n2 * cosi);
-		rp = rp * rp;
-		float r = 0.5f * rs + 0.5f + rp;
-		System.out.println("r = " + r);
 		return r;
 	}
 	
@@ -311,6 +271,7 @@ public class TracerMain {
 	 * Traces the given ray through the scene until att is less than <code>ATT_MIN</code>
 	 * @param ray the ray to trace
 	 * @param att current attenuation value
+	 * @param bounces number of bounces this ray has taken already
 	 * @return the color this ray yields
 	 */
 	public Color3f trace(Ray ray, float att, int bounces) {
@@ -337,16 +298,7 @@ public class TracerMain {
 					obj = s;
 				}
 			}
-//			System.out.println("t = " + t);
 		}
-		/*if (obj != null) {
-			System.out.println("obj = " + obj);
-//			System.out.println("mint = " + mint);
-		}
-		for (Shape s : checkList) {
-			System.out.print(s + ", ");
-		}
-		System.out.println();*/
 		if(obj == null) return Color3f.black;
 		// do light calculation
 		Vector3f pos = new Vector3f(ray.origin).add(new Vector3f(ray.direction).mul(mint));
@@ -354,7 +306,6 @@ public class TracerMain {
 		Color3f lColor = new Color3f();
 		for (Light l : lights) {
 			lColor.addThis(l.traceLight(pos, normal, obj.m, objects));
-			//lColor.addThis(traceLight(pos, normal, obj.m, l));
 		}
 		
 		float reflectance = obj.m.reflectance;
@@ -374,7 +325,6 @@ public class TracerMain {
 				n1 = obj.m.refractionIndex;
 			}
 			float reflCoeff = calcReflectance(ray, normal, n1, n2);
-//			float reflCoeff = fresnel(ray, normal, n1, n2);
 			reflectance *= reflCoeff;
 			Vector3f refract = refract(ray, normal, n1, n2);
 			if (refract != null) {
@@ -393,80 +343,6 @@ public class TracerMain {
 		}
 		
 		return lColor.mul(obj.m.color.mul(att).add(refColor).add(refrColor));
-	}
-	
-	public Color3f traceIterative(Ray ray, float att, int bounceLimit) {
-		Color3f resColor = new Color3f();
-		Stack<Ray> rays = new Stack<>();
-		Stack<Integer> bounces = new Stack<>();
-		Stack<Color3f> multipliers = new Stack<>();
-		rays.add(ray);
-		bounces.add(1);
-		multipliers.add(new Color3f(1.0f));
-		int i = 0;
-		while(!rays.isEmpty()) {
-			
-			Ray r = rays.pop();
-			int b = bounces.pop();
-			Color3f multiplier = multipliers.pop();
-			if (b > bounceLimit) return resColor;
-			
-			// find closest object
-			float mint = -1;
-			Shape obj = null;
-			for(Shape s : objects) {
-				float t = s.collides(r);
-				if (t > 0) {
-					if (t < mint || obj == null) {
-						mint = t;
-						obj = s;
-					}
-				}
-			}
-			if (obj == null) continue;
-			if (i > 0)
-				System.out.println("hi");
-			i++;
-			// do light calculation
-			Vector3f pos = new Vector3f(r.origin).add(new Vector3f(ray.direction).mul(mint));
-			Vector3f normal = new Vector3f(obj.normalAt(pos));
-			Color3f lColor = new Color3f();
-			for (Light l : lights) {
-				lColor.addThis(l.traceLight(pos, normal, obj.m, objects));
-			}
-			// multiply the base color by light color and attenuation, and
-			// multiply the result by the parent's light times reflectance
-			Color3f oColor = obj.m.color;//.mul((float) Math.pow(att, b));
-			resColor.addThis(lColor.mul(oColor).mul(multiplier));
-			
-			// do reflection
-			Vector3f reflect = new Vector3f(ray.direction).reflect(normal);
-			rays.push(new Ray(pos, reflect));
-			bounces.push(b + 1);
-			// push the light color times reflectance onto the stack to multiply the next color
-			multipliers.push(lColor.mul(obj.m.reflectance));
-			
-			// TODO: do refraction, same way
-		}
-		return resColor;
-	}
-	
-	/**
-	 * Calculate the color contribution of a light on a position.
-	 * @param pos position to calculate for
-	 * @param normal normal vector of the object at <code>pos</code>
-	 * @param m material of the object at <code>pos</code>
-	 * @param light light to calculate color for
-	 * @return the color contribution of <code>light</code>
-	 */
-	public Color3f traceLight(Vector3f pos, Vector3f normal, Material m, Light light) {
-		Ray toLight = new Ray(pos, new Vector3f(light.pos).sub(pos).normalize());
-		for (Shape obj : objects) {
-			float t = obj.collides(toLight);
-			if (t > 0) return Color3f.black;
-		}
-		//TODO: make light.calcColor do more work so that DirectionalLight and AmbientLight work
-		return light.calcColor(pos, normal, m);
 	}
 	
 	public static void main(String[] args) {

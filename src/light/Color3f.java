@@ -112,12 +112,8 @@ public class Color3f {
 	 * @return RGB value of this color
 	 */
 	public int getRGB() {
-		/*int ir = (int) (r * 255.0);
-		int ig = (int) (g * 255.0);
-		int ib = (int) (b * 255.0);*/
 		Color3f c = this.clamp();
 		return new java.awt.Color(c.r, c.g, c.b).getRGB();
-//		return ib + ig << 8 + ir << 16;
 	}
 	
 	/**

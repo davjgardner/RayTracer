@@ -70,9 +70,7 @@ public class DiskLight extends Light {
 		float x = sr * (float) Math.cos(theta);
 		float y = sr * (float) Math.sin(theta);
 		Vector3f p = new Vector3f(u).mul(x).add(new Vector3f(v).mul(y)).add(pos);
-		//System.out.println(p.sub(pos).dot(normal));
 		return p;
-		//return new Vector3f(pos);
 	}
 	
 	@Override
