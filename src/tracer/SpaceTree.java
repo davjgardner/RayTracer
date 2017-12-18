@@ -24,6 +24,12 @@ class SpaceTree {
 	
 	private static final int MAX_LEVEL = 4;
 	
+	/**
+	 *
+	 * @param shapes list of shapes
+	 * @param center center of the bounding box
+	 * @param size axial sizes of the box
+	 */
 	SpaceTree(List<Shape> shapes, Vector3f center, Vector3f size) {
 		this.shapes = new LinkedList<>();
 		this.shapes.addAll(shapes);
@@ -32,8 +38,14 @@ class SpaceTree {
 		this.bounds = new AlignedBox(new Vector3f(center).sub(halfSize), new Vector3f(center).add(halfSize));
 	}
 	
+	/**
+	 * Builds the tree extending from this node
+	 * @param axis axis to partition on
+	 * @param level current tree depth
+	 */
 	void createTree(int axis, int level) {
 		if (shapes.size() <= 1 || level >= MAX_LEVEL) return;
+		// partition box
 		Plane part = null;
 		AlignedBox leftBox = null, rightBox = null;
 		switch(axis) {
@@ -53,6 +65,8 @@ class SpaceTree {
 				part = new Plane(new Vector3f(0.0f, 0.0f, -1.0f), bounds.getCenter(), null);
 				break;
 		}
+		
+		// sort shapes
 		List<Shape> leftList = new LinkedList<>(), rightList = new LinkedList<>();
 		for (Shape s : shapes) {
 			// sort
@@ -72,6 +86,7 @@ class SpaceTree {
 			}
 		}
 		
+		// create children
 		if ((leftList.size() == shapes.size() && rightList.size() == shapes.size())
 				|| (leftList.isEmpty() || rightList.isEmpty())) {
 			// partition did nothing, don't create children
@@ -86,6 +101,10 @@ class SpaceTree {
 		}
 	}
 	
+	/**
+	 *
+	 * @return list of shapes
+	 */
 	List<Shape> getList() {
 		return shapes;
 	}
@@ -100,6 +119,10 @@ class SpaceTree {
 		return checkList;
 	}
 	
+	/**
+	 * Prints this tree with the given amount of indent
+	 * @param indent
+	 */
 	void print(int indent) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < indent; i++) {

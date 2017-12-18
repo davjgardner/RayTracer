@@ -37,7 +37,6 @@ public class PointLight extends Light {
 		float d = toLightv.length();
 		Ray toLight = new Ray(pos, toLightv);
 		
-//		return this.calcColor(pos, normal, m);
 		for (Shape obj : objects) {
 			float t = obj.collides(toLight);
 			if (t > 0.0f && t < d && obj.m.refractionIndex == 0)
