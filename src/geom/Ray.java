@@ -20,4 +20,18 @@ public class Ray {
 		this.direction = direction.normalize();
 		this.origin.add(new Vector3f(this.direction).mul(ERR_DELTA));
 	}
+	
+	/**
+	 * Calculates the point <code>t</code> units along the ray
+	 * @param t
+	 * @return
+	 */
+	public Vector3f getPoint(float t) {
+		return new Vector3f(origin).add(new Vector3f(direction).mul(t));
+	}
+	
+	@Override
+	public String toString() {
+		return "o=" + origin + ", d=" + direction;
+	}
 }

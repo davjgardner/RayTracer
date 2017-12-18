@@ -36,13 +36,13 @@ public class DiskLight extends Light {
 		
 		// Calculate orthonormal basis for disk
 		// Method from https://stackoverflow.com/questions/19337314/generate-random-point-on-a-2d-disk-in-3d-space-given-normal-vector
-		if (Math.abs(normal.x) < Math.abs(normal.y) &&
-				Math.abs(normal.x) < Math.abs(normal.z)) {
+		if (Math.abs(normal.x) <= Math.abs(normal.y) &&
+				Math.abs(normal.x) <= Math.abs(normal.z)) {
 			u = new Vector3f(0, -normal.z, normal.y);
 			v = new Vector3f(normal.y * normal.y + normal.z * normal.z,
 					-normal.x * normal.y, -normal.x * normal.z);
-		} else if (Math.abs(normal.y) < Math.abs(normal.x) &&
-				Math.abs(normal.y) < Math.abs(normal.z)) {
+		} else if (Math.abs(normal.y) <= Math.abs(normal.x) &&
+				Math.abs(normal.y) <= Math.abs(normal.z)) {
 			u = new Vector3f(-normal.z, 0, normal.x);
 			v = new Vector3f(-normal.y * normal.x,
 					normal.x * normal.x + normal.z * normal.z,
@@ -52,6 +52,8 @@ public class DiskLight extends Light {
 			v = new Vector3f(-normal.z * normal.x, -normal.z * normal.y,
 					normal.x * normal.x + normal.y * normal.y);
 		}
+		System.out.println("u = " + u);
+		System.out.println("v = " + v);
 		u.normalize();
 		v.normalize();
 		rand = new Random();
@@ -61,7 +63,7 @@ public class DiskLight extends Light {
 	 *
 	 * @return a uniformly-sampled random point on the disk
 	 */
-	private Vector3f samplePoint() {
+	public Vector3f samplePoint() {
 		float r = rand.nextFloat();
 		float theta = rand.nextFloat() * 2 * (float) Math.PI;
 		float sr = radius * (float) Math.sqrt(r);

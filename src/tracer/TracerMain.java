@@ -163,7 +163,8 @@ public class TracerMain {
 		tree.print(0);
 		
 		img.getGraphics().drawRect(0, 0, img.getWidth(), img.getHeight());
-		render();
+//		render();
+		renderDOF(0.05f, 6f, 20);
 		
 		frame.repaint();
 		frame.setVisible(true);
@@ -188,7 +189,7 @@ public class TracerMain {
 	
 	
 	/**
-	 * Renders the image
+	 * Renders the image using a simple pinhole camera model
 	 */
 	public void render() {
 		float k = 0;
@@ -205,6 +206,46 @@ public class TracerMain {
 			}
 			int p;
 			if ((p = (int) (((float) x / (float) (width * supersample)) * 100f)) % 10 == 0) {
+				System.out.println(p + "%");
+			}
+		}
+	}
+	
+	/**
+	 * Renders the image using a camera with a real aperture
+	 * @param aperture radius of lens disk
+	 * @param dof distance to focal plane
+	 * @param samples number of secondary rays
+	 */
+	public void renderDOF(float aperture, float dof, int samples) {
+		DiskLight lens = new DiskLight(new Vector3f(), new Vector3f(0.0f, 0.0f, -1.0f),
+				aperture, null);
+		float invSamples = 1.0f / (float) samples;
+		for (int x = 0; x < width * supersample; x++) {
+			for (int y = 0; y < height * supersample; y++) {
+				// Calculate and cast the primary ray (same as pinhole model)
+				Ray primRay = cast(x, y);
+				Color3f primColor = trace(primRay, 1.0f, 1);
+				
+				Vector3f focalPoint = primRay.getPoint(dof);
+				Color3f secColor = new Color3f();
+				// Cast out [samples] secondary rays and average their colors
+				for (int i = 0; i < samples; i++) {
+					Vector3f pos = lens.samplePoint();
+//					System.out.println("pos = " + pos);
+//					System.out.println("pos.x = " + pos.x);
+					Ray secRay = new Ray(pos, new Vector3f(focalPoint).sub(pos));
+//					System.out.println("secRay = " + secRay);
+					Color3f c = trace(secRay, 1.0f, 1);
+//					System.out.println("c = " + c);
+					secColor.addThis(c.mul(invSamples));
+				}
+				// 50/50 blend of primary and secondary colors - tunable
+				Color3f outColor = primColor.mul(0.5f).add(secColor.mul(0.5f));
+				img.setRGB(x, y, outColor.getRGB());
+			}
+			int p;
+			if ((p = (int) (((float) x / (width * supersample)) * 100f)) % 10 == 0) {
 				System.out.println(p + "%");
 			}
 		}
